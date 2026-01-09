@@ -28,10 +28,15 @@ public class UserSteps {
                 .then();
     }
 
-    @Step("Логин курьера")
-    public ValidatableResponse loginCourier(User user) {
+    @Step("Логин пользователя")
+    public ValidatableResponse loginUser(User user) {
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("email", user.getEmail());
+        requestBody.put("password", user.getPassword());
+
         return given()
-                .body(user)
+                .contentType(ContentType.JSON)
+                .body(requestBody)
                 .when()
                 .post(USER_LOGIN)
                 .then();
@@ -40,7 +45,7 @@ public class UserSteps {
     @Step("Удаление пользователя")
     public ValidatableResponse deleteUser(User user) {
         return given()
-                .header("Authorization", user.getToken())
+                .header("Authorization", user.getAccessToken())
                 .when()
                 .delete(DELETE_USER)
                 .then();

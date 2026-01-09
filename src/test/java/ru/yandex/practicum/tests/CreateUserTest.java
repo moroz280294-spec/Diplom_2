@@ -9,7 +9,6 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.categories.Categories;
 import ru.yandex.practicum.models.User;
 import ru.yandex.practicum.steps.UserSteps;
 
@@ -108,9 +107,10 @@ public class CreateUserTest extends BaseTest {
                 .body("success", is(false))
                 .body("message", equalTo("Email, password and name are required fields"));
     }
+
     @After
     public void tearDown() {
-        if (user != null && user.getToken() != null) {
+        if (user != null && user.getAccessToken() != null) {
             try {
                 userSteps.deleteUser(user).extract().response();
             } catch (Exception ignored) {}

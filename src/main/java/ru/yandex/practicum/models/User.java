@@ -3,8 +3,8 @@ package ru.yandex.practicum.models;
 public class User {
 
 
-    public User withToken(String token) {
-        this.token = token;
+    public User withAccessToken(String accessToken) {
+        this.accessToken = accessToken;
         return  this;
     }
 
@@ -39,9 +39,10 @@ public class User {
     private String password;
     private String firstName;
 
-    public String getToken() {
-        return token;
+    public String getAccessToken() {
+        return accessToken;
     }
 
-    public String token;
+    public String accessToken;
 }
+
