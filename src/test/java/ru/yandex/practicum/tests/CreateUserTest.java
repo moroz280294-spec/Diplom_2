@@ -1,5 +1,6 @@
 package ru.yandex.practicum.tests;
 
+import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.RestAssured;
 import io.restassured.filter.log.RequestLoggingFilter;
@@ -33,6 +34,7 @@ public class CreateUserTest extends BaseTest {
 
     @Test
     @DisplayName("Тест. Успешное создание пользователя")
+    @Description("Проверка успешного создания пользователя с валидными данными. Проверяется корректность ответа, наличие токенов и их формат.")
     public void shouldCreateUserTest() {
         Response response = userSteps.createUser(user)
                 .statusCode(SC_OK)
@@ -54,6 +56,7 @@ public class CreateUserTest extends BaseTest {
 
     @Test
     @DisplayName("Тест.Нельзя создать двух пользователей с одинаковым email")
+    @Description("Проверка невозможности создания двух пользователей с одинаковым email. Система должна вернуть ошибку с сообщением 'User already exists'.")
     public void shouldNotAllowDuplicateUserEmailTest() {
         userSteps.createUser(user).statusCode(SC_OK);
         User duplicate = new User()
@@ -69,6 +72,7 @@ public class CreateUserTest extends BaseTest {
 
     @Test
     @DisplayName("Тест. Нельзя создать пользователя без email")
+    @Description("Проверка невозможности создания пользователя без указания email. Система должна вернуть ошибку валидации.")
     public void shouldNotCreateUserWithoutEmailTest() {
         User userWithoutEmail = new User()
                 .withPassword(RandomStringUtils.randomAlphabetic(8))
@@ -82,6 +86,7 @@ public class CreateUserTest extends BaseTest {
 
     @Test
     @DisplayName("Тест. Нельзя создать пользователя без пароля")
+    @Description("Проверка невозможности создания пользователя без указания пароля. Система должна вернуть ошибку валидации.")
     public void shouldNotCreateUserWithoutPasswordTest() {
         String randomPart = RandomStringUtils.randomAlphabetic(6);
         User userWithoutPassword = new User()
@@ -96,6 +101,7 @@ public class CreateUserTest extends BaseTest {
 
     @Test
     @DisplayName("Тест. Нельзя создать пользователя без имени")
+    @Description("Проверка невозможности создания пользователя без указания имени. Система должна вернуть ошибку валидации.")
     public void shouldNotCreateUserWithoutNameTest() {
         String randomPart = RandomStringUtils.randomAlphabetic(6);
         User userWithoutName = new User()

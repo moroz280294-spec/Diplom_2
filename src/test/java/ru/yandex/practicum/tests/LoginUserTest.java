@@ -1,10 +1,10 @@
 package ru.yandex.practicum.tests;
 
+import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.RestAssured;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
-import io.restassured.response.Response;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -23,18 +23,15 @@ public class LoginUserTest extends BaseTest {
     @Before
     public void setUp() {
         RestAssured.filters(new RequestLoggingFilter(), new ResponseLoggingFilter());
-        String randomPart = RandomStringUtils.randomAlphabetic(6).toLowerCase();
-        user = new User()
-                .withEmail("user" + randomPart + "@example.com")
-                .withPassword(RandomStringUtils.randomAlphabetic(8))
-                .withFirstName("user" + randomPart);
-        Response createResponse = userSteps.createUser(user).extract().response();
-        user.withAccessToken(createResponse.path("accessToken"));
     }
 
     @Test
     @DisplayName("Тест. Успешный логин пользователя")
+    @Description("Проверка успешного входа пользователя с валидными учетными данными. Проверяется корректность ответа, наличие токенов доступа и обновления.")
     public void shouldLoginUserTest() {
+        // Создание и авторизация пользователя
+        user = userSteps.createRandomUser();
+        
         userSteps.loginUser(user)
                 .statusCode(SC_OK)
                 .body("success", is(true))
@@ -47,6 +44,7 @@ public class LoginUserTest extends BaseTest {
 
     @Test
     @DisplayName("Тест. Нельзя залогиниться с несуществующим email")
+    @Description("Проверка невозможности входа с несуществующим email. Система должна вернуть ошибку 'email or password are incorrect'.")
     public void shouldNotLoginWithNonExistentEmailTest() {
         String randomPart = RandomStringUtils.randomAlphabetic(6);
         User userWithNonExistentEmail = new User()
@@ -61,7 +59,11 @@ public class LoginUserTest extends BaseTest {
 
     @Test
     @DisplayName("Тест. Нельзя залогиниться с некорректным паролем")
+    @Description("Проверка невозможности входа с некорректным паролем для существующего пользователя. Система должна вернуть ошибку 'email or password are incorrect'.")
     public void shouldNotLoginWithIncorrectPasswordTest() {
+        // Создание пользователя для получения его email
+        user = userSteps.createRandomUser();
+        
         // Пытаемся залогиниться с неправильным паролем
         User userWithWrongPassword = new User()
                 .withEmail(user.getEmail())
