@@ -23,15 +23,16 @@ public class LoginUserTest extends BaseTest {
     @Before
     public void setUp() {
         RestAssured.filters(new RequestLoggingFilter(), new ResponseLoggingFilter());
+
+
+        user = userSteps.createRandomUser();
     }
 
     @Test
     @DisplayName("Тест. Успешный логин пользователя")
     @Description("Проверка успешного входа пользователя с валидными учетными данными. Проверяется корректность ответа, наличие токенов доступа и обновления.")
     public void shouldLoginUserTest() {
-        // Создание и авторизация пользователя
-        user = userSteps.createRandomUser();
-        
+
         userSteps.loginUser(user)
                 .statusCode(SC_OK)
                 .body("success", is(true))
@@ -61,10 +62,7 @@ public class LoginUserTest extends BaseTest {
     @DisplayName("Тест. Нельзя залогиниться с некорректным паролем")
     @Description("Проверка невозможности входа с некорректным паролем для существующего пользователя. Система должна вернуть ошибку 'email or password are incorrect'.")
     public void shouldNotLoginWithIncorrectPasswordTest() {
-        // Создание пользователя для получения его email
-        user = userSteps.createRandomUser();
-        
-        // Пытаемся залогиниться с неправильным паролем
+
         User userWithWrongPassword = new User()
                 .withEmail(user.getEmail())
                 .withPassword("wrong_password_12345");
@@ -74,7 +72,6 @@ public class LoginUserTest extends BaseTest {
                 .body("success", is(false))
                 .body("message", equalTo("email or password are incorrect"));
     }
-
 
     @After
     public void tearDown() {
